@@ -1,0 +1,19 @@
+{
+  "name": "@needle-tools/three-animationpointer",
+  "version": "1.0.0",
+  "description": "KHR_animation_pointer support for three.js",
+  "type": "module",
+  "main": "src/index.js",
+  "author": {
+    "name": "Needle",
+    "email": "hi@needle.tools",
+    "url": "https://needle.tools/"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "three": ">=0.179.1"
+  },
+  "peerDependencies": {
+    "three": ">=0.165.0"
+  }
+}
