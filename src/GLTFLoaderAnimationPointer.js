@@ -11,7 +11,7 @@ import {
 } from 'three';
 
 /** 
- * @typedef {import("three/examples/jsm/loaders/GLTFLoader").GLTFLoaderPlugin} GLTFLoaderPlugin 
+ * @typedef {import("..").GLTFAnimationPointerExtension} PluginType 
  */
 
 // DUPLICATED from GLTFLoader.js
@@ -41,7 +41,7 @@ const _animationPointerDebug = false;
  *
  * Draft Specification: https://github.com/ux3d/glTF/tree/extensions/KHR_animation_pointer/extensions/2.0/Khronos/KHR_animation_pointer
  * 
- * @implements {GLTFLoaderPlugin}
+ * @implements {PluginType}
  */
 export class GLTFAnimationPointerExtension {
 
@@ -339,7 +339,7 @@ export class GLTFAnimationPointerExtension {
 
 		}
 
-		if ( targetId === null || isNaN( targetId ) ) {
+		if ( targetId === null || targetId === undefined || isNaN( targetId ) ) {
 
 			console.warn( 'Failed resolving animation node id: ' + targetId, target );
 			return;
@@ -440,6 +440,11 @@ export class GLTFAnimationPointerExtension {
 
 					break;
 
+			}
+
+			if( !TypedKeyframeTrack ) {
+				console.warn( 'Unsupported output accessor format', outputAccessor );
+				return;
 			}
 
 			const interpolation = sampler.interpolation !== undefined ? INTERPOLATION[ sampler.interpolation ] : InterpolateLinear;
