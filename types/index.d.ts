@@ -1,11 +1,13 @@
-import { GLTFLoaderPlugin } from "three/examples/jsm/loaders/GLTFLoader";
-import { GLTFLoaderPlugin } from "../src/GLTFLoaderAnimationPointer";
-
+import { GLTFLoaderPlugin } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 export type AnimationPointerResolver = {
     resolvePath(path: string): string | null;
 }
 
-export type GLTFAnimationPointerExtension = GLTFLoaderPlugin & {
-    setAnimationPointerResolver(resolver: AnimationPointerResolver | null): void;
+export declare class GLTFAnimationPointerExtension implements GLTFLoaderPlugin {
+    name: string;
+    parser: any;
+    constructor(parser: any);
+    setAnimationPointerResolver(resolver: AnimationPointerResolver | null): GLTFAnimationPointerExtension;
+    loadAnimation(animationIndex: number): Promise<any>;
 }
