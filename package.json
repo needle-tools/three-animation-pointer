@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "description": "KHR_animation_pointer support for three.js",
   "type": "module",
-  "main": "src/index.js",
+  "main": "index.js",
   "types": "types/index.d.ts",
   "exports": {
     ".": {
-      "import": "./src/index.js"
+      "import": "./index.js",
+      "require": "./index.js"
     }
   },
   "files": [
