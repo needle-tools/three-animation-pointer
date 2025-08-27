@@ -26,7 +26,7 @@ jobs:
                 
       - name: Publish to npm (stable branch)
         if: startsWith(github.ref_name, 'release/stable')
-        run: npx --yes needle-publish-helper@next publish "." --webhook "${{ secrets.DISCORD_WEBHOOK }}" --access-token "${{ secrets.NPM_TOKEN }}" --tag "stable" --create-tag "release/" --llm-api-key "${{ secrets.LLM_API_KEY }}"
+        run: npx --yes needle-publish-helper@next publish "." --webhook "${{ secrets.DISCORD_WEBHOOK }}" --access-token "${{ secrets.NPM_TOKEN }}" --create-tag "release/" --llm-api-key "${{ secrets.LLM_API_KEY }}"
                 
       - name: Publish to npm (rc branch)
         if: startsWith(github.ref_name, 'release/rc')
