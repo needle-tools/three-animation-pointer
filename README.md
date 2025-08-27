@@ -16,7 +16,7 @@ import { GLTFAnimationPointerExtension } from "@needle-tools/three-animation-poi
 const loader = new GLTFLoader();
 loader.register(p => {
     return new GLTFAnimationPointerExtension(p);
-}
+});
 ```
 
 ## Links

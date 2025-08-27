@@ -3,15 +3,19 @@
   "version": "1.0.0",
   "description": "KHR_animation_pointer support for three.js",
   "type": "module",
-  "main": "src/index.js",
+  "main": "dist/three-animation-pointer.js",
+  "module": "dist/three-animation-pointer.js",
   "types": "types/index.d.ts",
   "exports": {
     ".": {
-      "import": "./src/index.js"
+      "types": "./types/index.d.ts",
+      "import": "./dist/three-animation-pointer.js",
+      "require": "./dist/three-animation-pointer.js"
     }
   },
   "files": [
     "src",
+    "dist",
     "types",
     "package.json",
     "README.md",
@@ -27,8 +31,13 @@
     "url": "https://github.com/needle-tools/three-animation-pointer"
   },
   "license": "MIT",
+  "scripts": {
+    "build": "vite build",
+    "prepublishOnly": "npm run build"
+  },
   "devDependencies": {
-    "three": ">=0.179.1"
+    "three": ">=0.179.1",
+    "vite": "^5.0.0"
   },
   "peerDependencies": {
     "three": ">=0.165.0"
