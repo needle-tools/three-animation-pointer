@@ -10,6 +10,10 @@ import {
 	SkinnedMesh
 } from 'three';
 
+/** 
+ * @typedef {import("three/examples/jsm/loaders/GLTFLoader").GLTFLoaderPlugin} GLTFLoaderPlugin 
+ */
+
 // DUPLICATED from GLTFLoader.js
 const ANIMATION_TARGET_TYPE = {
 	node: 'node',
@@ -29,25 +33,32 @@ const INTERPOLATION = {
 	STEP: InterpolateDiscrete
 };
 
-// HACK monkey patching findNode to ensure we can map to other types required by KHR_animation_pointer.
-const find = PropertyBinding.findNode;
 const _animationPointerDebug = false;
+
 
 /**
  * Animation Pointer Extension
  *
  * Draft Specification: https://github.com/ux3d/glTF/tree/extensions/KHR_animation_pointer/extensions/2.0/Khronos/KHR_animation_pointer
+ * 
+ * @implements {GLTFLoaderPlugin}
  */
 export class GLTFAnimationPointerExtension {
 
+	/** @type {import("three/examples/jsm/loaders/GLTFLoader").GLTFParser} */
 	constructor( parser ) {
 
-		this.parser = parser;
 		this.name = KHR_ANIMATION_POINTER;
+		this.parser = parser;
+
+		/** @type {import("..").AnimationPointerResolver | null} */
 		this.animationPointerResolver = null;
 
 	}
 
+	/** 
+	 * @param {import("..").AnimationPointerResolver | null} animationPointerResolver
+	 */
 	setAnimationPointerResolver( animationPointerResolver ) {
 
 		this.animationPointerResolver = animationPointerResolver;
@@ -318,10 +329,9 @@ export class GLTFAnimationPointerExtension {
 
 			}
 
-			const pointerResolver = this.animationPointerResolver;
-			if ( pointerResolver && pointerResolver.resolvePath ) {
+			if ( this.animationPointerResolver?.resolvePath ) {
 
-				path = pointerResolver.resolvePath( path );
+				path = this.animationPointerResolver.resolvePath( path );
 
 			}
 
@@ -627,10 +637,16 @@ export class GLTFAnimationPointerExtension {
 
 let _havePatchedPropertyBindings = false;
 
+// HACK monkey patching findNode to ensure we can map to other types required by KHR_animation_pointer.
+/** @type {PropertyBinding.findNode | null} */
+let findNodeFn = null;
+
 function _ensurePropertyBindingPatch() {
 
 	if (_havePatchedPropertyBindings) return;
 	_havePatchedPropertyBindings = true;
+
+	const findNode = (findNodeFn ||= PropertyBinding.findNode);
 
 	// "node" is the Animator component in our case
 	// "path" is the animated property path, just with translated material names.
@@ -707,7 +723,7 @@ function _ensurePropertyBindingPatch() {
 
 			if (!currentTarget) {
 
-				const originalFindResult = find(node, sections[2]);
+				const originalFindResult = findNode(node, sections[2]);
 
 				if (!originalFindResult)
 					console.warn(KHR_ANIMATION_POINTER + ': Property binding not found', path, node, node.name, sections);
@@ -723,7 +739,7 @@ function _ensurePropertyBindingPatch() {
 
 		}
 
-		return find(node, path);
+		return findNode(node, path);
 
 	};
 
