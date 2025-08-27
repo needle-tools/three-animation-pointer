@@ -1,4 +1,3 @@
-@@ -1,729 +0,0 @@
 import {
 	AnimationClip,
 	ColorKeyframeTrack,
@@ -33,14 +32,13 @@ const INTERPOLATION = {
 // HACK monkey patching findNode to ensure we can map to other types required by KHR_animation_pointer.
 const find = PropertyBinding.findNode;
 const _animationPointerDebug = false;
-let _havePatchedPropertyBindings = false;
 
 /**
  * Animation Pointer Extension
  *
  * Draft Specification: https://github.com/ux3d/glTF/tree/extensions/KHR_animation_pointer/extensions/2.0/Khronos/KHR_animation_pointer
  */
-class GLTFAnimationPointerExtension {
+export class GLTFAnimationPointerExtension {
 
 	constructor( parser ) {
 
@@ -57,107 +55,6 @@ class GLTFAnimationPointerExtension {
 
 	}
 
-	_patchPropertyBindingFindNode() {
-
-		if ( _havePatchedPropertyBindings ) return;
-		_havePatchedPropertyBindings = true;
-
-		// "node" is the Animator component in our case
-		// "path" is the animated property path, just with translated material names.
-		PropertyBinding.findNode = function ( node, path ) {
-
-			if ( path.startsWith( '.materials.' ) ) {
-
-				if ( _animationPointerDebug ) console.log( 'FIND', path );
-
-				const remainingPath = path.substring( '.materials.'.length ).substring( path.indexOf( '.' ) );
-				const nextIndex = remainingPath.indexOf( '.' );
-				const uuid = nextIndex < 0 ? remainingPath : remainingPath.substring( 0, nextIndex );
-				let res = null;
-				node.traverse( x => {
-
-					if ( res !== null || ( x.type !== 'Mesh' && x.type !== 'SkinnedMesh' ) ) return;
-					if ( x[ 'material' ] && ( x[ 'material' ].uuid === uuid || x[ 'material' ].name === uuid ) ) {
-
-						res = x[ 'material' ];
-						if ( _animationPointerDebug ) console.log( res, remainingPath );
-						if ( res !== null ) {
-
-							if ( remainingPath.endsWith( '.map' ) )
-								res = res[ 'map' ];
-							else if ( remainingPath.endsWith( '.emissiveMap' ) )
-								res = res[ 'emissiveMap' ];
-
-							// TODO other texture slots only make sense if three.js actually supports them
-							// (currently only .map can have repeat/offset)
-
-						}
-
-					}
-
-				} );
-
-				return res;
-
-			} else if ( path.startsWith( '.nodes.' ) || path.startsWith( '.lights.' ) || path.startsWith( '.cameras.' ) ) {
-
-				const sections = path.split( '.' );
-				let currentTarget = undefined;
-				for ( let i = 1; i < sections.length; i ++ ) {
-
-					const val = sections[ i ];
-					const isUUID = val.length == 36;
-					if ( isUUID ) {
-
-						// access by UUID
-						currentTarget = node.getObjectByProperty( 'uuid', val );
-
-					} else if ( currentTarget && currentTarget[ val ] ) {
-
-						// access by index
-						const index = Number.parseInt( val );
-						let key = val;
-						if ( index >= 0 ) key = index;
-						currentTarget = currentTarget[ key ];
-						if ( _animationPointerDebug )
-							console.log( currentTarget );
-
-					} else {
-
-						// access by node name
-						const foundNode = node.getObjectByName( val );
-
-						if ( foundNode )
-							currentTarget = foundNode;
-
-					}
-
-				}
-
-				if ( ! currentTarget ) {
-
-					const originalFindResult = find( node, sections[ 2 ] );
-
-					if ( ! originalFindResult )
-						console.warn( KHR_ANIMATION_POINTER + ': Property binding not found', path, node, node.name, sections );
-
-					return originalFindResult;
-
-				}
-
-				if ( _animationPointerDebug )
-					console.log( 'NODE', path, currentTarget );
-
-				return currentTarget;
-
-			}
-
-			return find( node, path );
-
-		};
-
-	}
-
 	/* DUPLICATE of functionality in GLTFLoader */
 	loadAnimationTargetFromChannel( animationChannel ) {
 
@@ -169,8 +66,7 @@ class GLTFAnimationPointerExtension {
 
 	loadAnimationTargetFromChannelWithAnimationPointer( animationChannel ) {
 
-		if ( ! this._havePatchedPropertyBindings )
-			this._patchPropertyBindingFindNode();
+		_ensurePropertyBindingPatch();
 
 		const target = animationChannel.target;
 		const useExtension = target.extensions && target.extensions[ KHR_ANIMATION_POINTER ] && target.path && target.path === 'pointer';
@@ -727,4 +623,108 @@ class GLTFAnimationPointerExtension {
 
 }
 
-export { GLTFAnimationPointerExtension };
+
+
+let _havePatchedPropertyBindings = false;
+
+function _ensurePropertyBindingPatch() {
+
+	if (_havePatchedPropertyBindings) return;
+	_havePatchedPropertyBindings = true;
+
+	// "node" is the Animator component in our case
+	// "path" is the animated property path, just with translated material names.
+	PropertyBinding.findNode = function (node, path) {
+
+		if (path.startsWith('.materials.')) {
+
+			if (_animationPointerDebug) console.log('FIND', path);
+
+			const remainingPath = path.substring('.materials.'.length).substring(path.indexOf('.'));
+			const nextIndex = remainingPath.indexOf('.');
+			const uuid = nextIndex < 0 ? remainingPath : remainingPath.substring(0, nextIndex);
+			let res = null;
+			node.traverse(x => {
+
+				if (res !== null || (x.type !== 'Mesh' && x.type !== 'SkinnedMesh')) return;
+				if (x['material'] && (x['material'].uuid === uuid || x['material'].name === uuid)) {
+
+					res = x['material'];
+					if (_animationPointerDebug) console.log(res, remainingPath);
+					if (res !== null) {
+
+						if (remainingPath.endsWith('.map'))
+							res = res['map'];
+						else if (remainingPath.endsWith('.emissiveMap'))
+							res = res['emissiveMap'];
+
+						// TODO other texture slots only make sense if three.js actually supports them
+						// (currently only .map can have repeat/offset)
+
+					}
+
+				}
+
+			});
+
+			return res;
+
+		} else if (path.startsWith('.nodes.') || path.startsWith('.lights.') || path.startsWith('.cameras.')) {
+
+			const sections = path.split('.');
+			let currentTarget = undefined;
+			for (let i = 1; i < sections.length; i++) {
+
+				const val = sections[i];
+				const isUUID = val.length == 36;
+				if (isUUID) {
+
+					// access by UUID
+					currentTarget = node.getObjectByProperty('uuid', val);
+
+				} else if (currentTarget && currentTarget[val]) {
+
+					// access by index
+					const index = Number.parseInt(val);
+					/** @type {string|number} */
+					let key = val;
+					if (index >= 0) key = index;
+					currentTarget = currentTarget[key];
+					if (_animationPointerDebug)
+						console.log(currentTarget);
+
+				} else {
+
+					// access by node name
+					const foundNode = node.getObjectByName(val);
+
+					if (foundNode)
+						currentTarget = foundNode;
+
+				}
+
+			}
+
+			if (!currentTarget) {
+
+				const originalFindResult = find(node, sections[2]);
+
+				if (!originalFindResult)
+					console.warn(KHR_ANIMATION_POINTER + ': Property binding not found', path, node, node.name, sections);
+
+				return originalFindResult;
+
+			}
+
+			if (_animationPointerDebug)
+				console.log('NODE', path, currentTarget);
+
+			return currentTarget;
+
+		}
+
+		return find(node, path);
+
+	};
+
+}
