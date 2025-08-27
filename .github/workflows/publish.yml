@@ -23,6 +23,9 @@ jobs:
           node-version: '22'
           cache: 'npm'
           cache-dependency-path: './package.json'
+          
+      - name: Install dependencies
+        run: npm install
                 
       - name: Publish to npm (stable branch)
         if: startsWith(github.ref_name, 'release/stable')
