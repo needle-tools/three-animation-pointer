@@ -5,6 +5,14 @@
   "type": "module",
   "main": "src/index.js",
   "types": "types/index.d.ts",
+  "files": [
+    "src",
+    "types",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE.md"
+  ],
   "author": {
     "name": "Needle",
     "email": "hi@needle.tools",
