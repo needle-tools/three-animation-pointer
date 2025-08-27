@@ -10,6 +10,9 @@
     "email": "hi@needle.tools",
     "url": "https://needle.tools/"
   },
+  "repository": {
+    "url": "https://github.com/needle-tools/three-animationpointer"
+  },
   "license": "MIT",
   "devDependencies": {
     "three": ">=0.179.1"
