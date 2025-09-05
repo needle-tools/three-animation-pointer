@@ -8,6 +8,12 @@ This package adds a [three.js](https://github.com/mrdoob/three.js) GLTFLoader pl
 - lights 💡
 - custom code/scripts 📄
 
+
+### Three.js Example
+<a href="https://threejs.org/examples/?q=gltf#webgl_loader_gltf_animation_pointer" target="_blank">
+<img width="1240" height="696" alt="image" src="https://github.com/user-attachments/assets/baa109d8-974b-4c97-9ae9-31a4391e651b" />
+</a>
+
 ### Usage
 
 Install the package:   
