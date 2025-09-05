@@ -1,6 +1,6 @@
 # KHR_animation_pointer for three.js
 
-This package adds a [three.js](https://github.com/mrdoob/three.js) GLTFLoader plugin for [KHR_animation_pointer](https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Khronos/KHR_animation_pointer) support.
+This package adds a [three.js](https://github.com/mrdoob/three.js) GLTFLoader plugin for [KHR_animation_pointer](https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Khronos/KHR_animation_pointer) support allowing you to animate anything in your 3D scene, from material, light or camera properties to custom code.
 
 ### Animate anything
 - all material properties 💎 (including texture transforms) 
@@ -37,13 +37,15 @@ loader.register(p => {
 });
 ```
 
-### How to create glTF files using KHR_animation_pointer 
+*Note: To animate custom code you might need to register your own path resolver in the GLTFAnimationPointerExtension plugin* 
+
+### How to create glTF files with KHR_animation_pointer animations
 
 You can use one of the listed tools below to export glTF animations in the right format
 
 - [Blender 4.3](https://www.blender.org/) and newer - *experimental KHR_animation_pointer support, currently only in 'scene animation' mode ([#2285](https://github.com/KhronosGroup/glTF-Blender-IO/issues/2285))*
-- [Needle Engine for Unity](https://engine.needle.tools/docs/unity/) - defaults to KHR_animation_pointer and battle tested since 2022
-- [UnityGLTF](https://github.com/KhronosGroup/UnityGLTF)
+- [Needle Engine for Unity](https://engine.needle.tools/docs/unity/) - using KHR_animation_pointer by default in all projects since 2022
+- [UnityGLTF](https://github.com/KhronosGroup/UnityGLTF) - enable KHR_animation_pointer in settings to use in Exports
 
 
 **Mini Unity Tutorial**
@@ -58,6 +60,7 @@ You can use one of the listed tools below to export glTF animations in the right
 
 - [Khronos KHR_animation_pointer spec](https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Khronos/KHR_animation_pointer)
 - [three.js repository PR #24108](https://github.com/mrdoob/three.js/pull/24108)
+- [three.js example](https://threejs.org/examples/?q=gltf#webgl_loader_gltf_animation_pointer) - created in Unity
 
 
 
