@@ -14,7 +14,7 @@ This package adds a [three.js](https://github.com/mrdoob/three.js) GLTFLoader pl
 <img width="1240" height="696" alt="image" src="https://github.com/user-attachments/assets/baa109d8-974b-4c97-9ae9-31a4391e651b" />
 </a>
 
-https://github.com/user-attachments/assets/13fe4102-00ee-430f-9a17-9611fa543f77
+[Video](https://github.com/user-attachments/assets/13fe4102-00ee-430f-9a17-9611fa543f77)
 
 [three.js Example](https://threejs.org/examples/?q=gltf#webgl_loader_gltf_animation_pointer)
 
@@ -48,7 +48,7 @@ You can use one of the listed tools below to export glTF animations in the right
 
 **Mini Unity Tutorial**
 
-https://github.com/user-attachments/assets/e118a33d-9725-4313-b1d4-b4dbfc7a5a48
+[Video](https://github.com/user-attachments/assets/e118a33d-9725-4313-b1d4-b4dbfc7a5a48)
 
 *Note: If you use UnityGLTF for exporting the glTF file make sure to enable the `KHR_animation_pointer` option in the UnityGLTF export settings.*
 
