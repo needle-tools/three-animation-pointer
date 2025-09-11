@@ -657,6 +657,10 @@ function _ensurePropertyBindingPatch() {
 	// "path" is the animated property path, just with translated material names.
 	PropertyBinding.findNode = function (node, path) {
 
+		// if the binding is empty fallback to original
+		if (!path) return findNode(node, path);
+
+
 		if (path.startsWith('.materials.')) {
 
 			if (_animationPointerDebug) console.log('FIND', path);
