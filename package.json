@@ -1,6 +1,6 @@
 {
   "name": "@needle-tools/three-animation-pointer",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "KHR_animation_pointer support for three.js",
   "type": "module",
   "main": "dist/three-animation-pointer.js",
