@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [1.0.5] - 2025-10-15
+- Fix: Remove leftover log
+
+## [1.0.5] - 2025-10-15
 - Add: support for boolean animation tracks (when using ubyte type)
 
 ## [1.0.4] - 2025-10-08
