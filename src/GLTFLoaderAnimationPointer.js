@@ -457,15 +457,6 @@ export class GLTFAnimationPointerExtension {
 
 					const looksLikeBool = isUInt8 && // UNSIGNED_BYTE as a strong hint
 						isBooleanTarget(node, animationPointerPropertyPath);
-
-						// Log once per target property if it looks like a boolean
-						if (looksLikeBool) {
-							console.log('Assuming boolean animation for', animationPointerPropertyPath, 'based on property type and accessor type');
-						}
-						else
-						{
-							console.log('Not a boolean target', animationPointerPropertyPath);
-						}
 					if (looksLikeBool) {
 						TypedKeyframeTrack = BooleanKeyframeTrack;
 						convertToBoolean = true; // map 0 => false, >0 => true
