@@ -7,7 +7,8 @@ import {
 	PropertyBinding,
 	QuaternionKeyframeTrack,
 	VectorKeyframeTrack,
-	SkinnedMesh
+	SkinnedMesh,
+	BooleanKeyframeTrack
 } from 'three';
 
 /** 
@@ -414,6 +415,29 @@ export class GLTFAnimationPointerExtension {
 		// default
 		__createTrack( this.parser );
 
+
+		function isBooleanTarget(node, trackPath)  {
+		// trackPath like ".nodes.MyNode.visible" or ".materials.<uuid>.wireframe"
+		try {
+	
+			// get last token after '.'
+			const sections = trackPath.split('.').filter(Boolean);
+			let last = sections[sections.length - 1]; // e.g., 'visible' or 'iridescenceThicknessRange[0]'
+		
+			// strip indexers like [0]
+			const propName = last.replace(/\[.*\]$/, '');
+		
+			// bail if not a direct property
+			if (!(propName in node)) return false;
+
+			const val = node[propName];
+			return typeof val === 'boolean';
+		} 
+		catch {
+			return false;
+		}
+		}
+
 		/** Create a new track using the current parts array */
 		function __createTrack( parser ) {
 
@@ -423,11 +447,31 @@ export class GLTFAnimationPointerExtension {
 				console.log( node, inputAccessor, outputAccessor, target, animationPointerPropertyPath );
 
 			let TypedKeyframeTrack;
-
+			let convertToBoolean = false;
 			switch ( outputAccessor.itemSize ) {
 
-				case 1:
-					TypedKeyframeTrack = NumberKeyframeTrack;
+				case 1: 
+					// Get type of outputAccessor.array elements
+					const arrayType = Object.prototype.toString.call(outputAccessor.array);
+					const isUInt8 = (arrayType === '[object Uint8Array]');
+
+					const looksLikeBool = isUInt8 && // UNSIGNED_BYTE as a strong hint
+						isBooleanTarget(node, animationPointerPropertyPath);
+
+						// Log once per target property if it looks like a boolean
+						if (looksLikeBool) {
+							console.log('Assuming boolean animation for', animationPointerPropertyPath, 'based on property type and accessor type');
+						}
+						else
+						{
+							console.log('Not a boolean target', animationPointerPropertyPath);
+						}
+					if (looksLikeBool) {
+						TypedKeyframeTrack = BooleanKeyframeTrack;
+						convertToBoolean = true; // map 0 => false, >0 => true
+					} else {
+						TypedKeyframeTrack = NumberKeyframeTrack;
+					}
 					break;
 				case 2:
 				case 3:
@@ -457,7 +501,11 @@ export class GLTFAnimationPointerExtension {
 			if ( animationPointerPropertyPath.endsWith( '.fov' ) ) {
 
 				outputArray = outputArray.map( value => value / Math.PI * 180 );
+			}
 
+			if (convertToBoolean) {
+				// boolean values are stored as ubyte in glTF, 0 = false, anything else = true 
+				outputArray = outputArray.map( v => v > 0 );
 			}
 
 			const track = new TypedKeyframeTrack(
