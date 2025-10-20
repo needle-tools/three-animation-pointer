@@ -261,7 +261,7 @@ export class GLTFAnimationPointerExtension {
 						case 'weights':
 							targetProperty = 'morphTargetInfluences';
 							break;
-						case "KHR_node_visibility/visible":
+						case "extensions/KHR_node_visibility/visible":
 							targetProperty = 'visible';
 							break;
 					}
