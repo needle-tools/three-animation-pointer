@@ -247,23 +247,29 @@ export class GLTFAnimationPointerExtension {
 					const pathStartNode = path.substring( 0, pathIndexNode );
 					targetProperty = path.substring( pathIndexNode );
 
-					switch ( targetProperty ) {
+					if ( targetProperty.startsWith( 'weights/' ) ) {
+						// `/nodes/{}/weights/{}` - control individual morph weights
+						const weightIndex = targetProperty.substring( 'weights/'.length );
+						targetProperty = 'morphTargetInfluences[' + weightIndex + ']';
+					} else {
+						switch ( targetProperty ) {
 
-						case 'translation':
-							targetProperty = 'position';
-							break;
-						case 'rotation':
-							targetProperty = 'quaternion';
-							break;
-						case 'scale':
-							targetProperty = 'scale';
-							break;
-						case 'weights':
-							targetProperty = 'morphTargetInfluences';
-							break;
-						case "extensions/KHR_node_visibility/visible":
-							targetProperty = 'visible';
-							break;
+							case 'translation':
+								targetProperty = 'position';
+								break;
+							case 'rotation':
+								targetProperty = 'quaternion';
+								break;
+							case 'scale':
+								targetProperty = 'scale';
+								break;
+							case 'weights':
+								targetProperty = 'morphTargetInfluences';
+								break;
+							case "extensions/KHR_node_visibility/visible":
+								targetProperty = 'visible';
+								break;
+						}
 					}
 
 					path = pathStartNode + targetProperty;
