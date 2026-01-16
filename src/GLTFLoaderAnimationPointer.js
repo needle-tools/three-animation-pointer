@@ -391,8 +391,11 @@ export class GLTFAnimationPointerExtension {
 
 		// specially handle the morphTargetInfluences property for multi-material meshes
 		// in which case the target object is a Group and the children are the actual targets
+		// Note that there is also morphTargetInfluences[i] for individual morph targets
 		// see NE-3311
-		if ( parts[ 3 ] === 'morphTargetInfluences' ) {
+		if ( parts[ 3 ].startsWith( 'morphTargetInfluences' ) ) {
+
+			const property = parts[ 3 ];
 
 			if ( node.type === 'Group' ) {
 
@@ -405,7 +408,7 @@ export class GLTFAnimationPointerExtension {
 					if ( ch instanceof SkinnedMesh && ch.morphTargetInfluences ) {
 
 						parts[ 3 ] = ch.name;
-						parts[ 4 ] = 'morphTargetInfluences';
+						parts[ 4 ] = property;
 						__createTrack( this.parser );
 
 					}
