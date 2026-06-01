@@ -250,7 +250,15 @@ export class GLTFAnimationPointerExtension {
 					if ( targetProperty.startsWith( 'weights/' ) ) {
 						// `/nodes/{}/weights/{}` - control individual morph weights
 						const weightIndex = targetProperty.substring( 'weights/'.length );
-						targetProperty = 'morphTargetInfluences[' + weightIndex + ']';
+						if ( /^\d+$/.test( weightIndex ) ) {
+
+							targetProperty = 'morphTargetInfluences[' + weightIndex + ']';
+
+						} else {
+
+							console.warn( KHR_ANIMATION_POINTER + ': invalid weight index', targetProperty, path );
+
+						}
 					} else {
 						switch ( targetProperty ) {
 
@@ -393,7 +401,7 @@ export class GLTFAnimationPointerExtension {
 		// in which case the target object is a Group and the children are the actual targets
 		// Note that there is also morphTargetInfluences[i] for individual morph targets
 		// see NE-3311
-		if ( parts[ 3 ].startsWith( 'morphTargetInfluences' ) ) {
+		if ( parts[ 3 ]?.startsWith( 'morphTargetInfluences' ) ) {
 
 			const property = parts[ 3 ];
 
