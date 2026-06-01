@@ -6,6 +6,7 @@ This package adds a [three.js](https://github.com/mrdoob/three.js) GLTFLoader pl
 - all material properties 💎 (including texture transforms) 
 - cameras 🎥
 - lights 💡
+- morph target weights 😀 (all weights or individual ones via `/nodes/{}/weights/{}`)
 - custom code/scripts 📄
 
 
