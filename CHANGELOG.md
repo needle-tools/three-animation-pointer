@@ -4,6 +4,9 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-06-12
+- Fix: morph target (blend shape) weight animation was silently dropped for multi-material meshes without skin/bones. The multi-material morph branch only bound children that were `SkinnedMesh`; such meshes load as a `Group` of plain `Mesh` children, so no track was created (and the empty-but-truthy result skipped the fallback). Now any child with `morphTargetInfluences` is bound.
+
 ## [1.1.0] - 2026-06-01
 - Add: support for `/nodes/{}/weights/{}` to animate individual morph target weights (works with multi-material meshes / primitives) — by @0b5vr in [#1](https://github.com/needle-tools/three-animation-pointer/pull/1)
 

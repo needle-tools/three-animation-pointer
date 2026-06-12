@@ -7,7 +7,6 @@ import {
 	PropertyBinding,
 	QuaternionKeyframeTrack,
 	VectorKeyframeTrack,
-	SkinnedMesh,
 	BooleanKeyframeTrack
 } from 'three';
 
@@ -408,12 +407,13 @@ export class GLTFAnimationPointerExtension {
 			if ( node.type === 'Group' ) {
 
 				if ( _animationPointerDebug )
-					console.log( 'Detected multi-material skinnedMesh export', animationPointerPropertyPath, node );
+					console.log( 'Detected multi-material mesh export', animationPointerPropertyPath, node );
 
-				// We assume the children are skinned meshes
+				// Bind any child that has morph influences. The children may be plain
+				// Mesh (no skin/bones) or SkinnedMesh, so we must not require SkinnedMesh.
 				for ( const ch of node.children ) {
 
-					if ( ch instanceof SkinnedMesh && ch.morphTargetInfluences ) {
+					if ( ch.morphTargetInfluences ) {
 
 						parts[ 3 ] = ch.name;
 						parts[ 4 ] = property;
