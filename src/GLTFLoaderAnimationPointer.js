@@ -706,6 +706,25 @@ export class GLTFAnimationPointerExtension {
 
 
 
+/**
+ * Like Object3D.getObjectByName, but does not match the object itself.
+ * @param {import("three").Object3D} parent
+ * @param {string} name
+ * @returns {import("three").Object3D | undefined}
+ */
+function _findDescendantByName( parent, name ) {
+
+	for ( const child of parent.children ) {
+
+		const found = child.getObjectByName( name );
+		if ( found ) return found;
+
+	}
+
+	return undefined;
+
+}
+
 let _havePatchedPropertyBindings = false;
 
 // HACK monkey patching findNode to ensure we can map to other types required by KHR_animation_pointer.
@@ -783,6 +802,17 @@ function _ensurePropertyBindingPatch() {
 					currentTarget = currentTarget[key];
 					if (_animationPointerDebug)
 						console.log(currentTarget);
+
+				} else if (currentTarget && currentTarget.isObject3D) {
+
+					// access by child node name, e.g. the submeshes of a multi-material mesh:
+					// `.nodes.<node>.<submesh>.morphTargetInfluences`.
+					// Must resolve inside the already resolved node: a glTF mesh used by multiple nodes
+					// is cloned per node, so every node has identically named submeshes.
+					const foundNode = _findDescendantByName(currentTarget, val);
+
+					if (foundNode)
+						currentTarget = foundNode;
 
 				} else {
 
