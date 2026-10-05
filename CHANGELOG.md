@@ -4,7 +4,7 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.1.3]
 - Fix: morph target (blend shape) weight animation bound to the wrong object when a multi-material mesh is used by multiple nodes. three.js clones a shared mesh per node, so every node's `Group` has identically named submeshes; the submesh segment of `.nodes.<node>.<submesh>.morphTargetInfluences` was looked up from the mixer root instead of inside `<node>`, so all tracks bound to the first node's submeshes. Child names are now resolved within the already resolved node.
 
 ## [1.1.2] - 2026-06-17
