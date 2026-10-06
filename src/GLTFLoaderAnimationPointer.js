@@ -787,10 +787,20 @@ function _ensurePropertyBindingPatch() {
 
 				const val = sections[i];
 				const isUUID = val.length == 36;
+				// Submesh names can also be Object3D property names (e.g. "position").
+				// Prefer the named descendant; shared meshes have clones with the same child names.
+				let namedDescendant;
+				if (!isUUID && currentTarget?.isObject3D) {
+					namedDescendant = _findDescendantByName(currentTarget, val);
+				}
 				if (isUUID) {
 
 					// access by UUID
 					currentTarget = node.getObjectByProperty('uuid', val);
+
+				} else if (namedDescendant) {
+
+					currentTarget = namedDescendant;
 
 				} else if (currentTarget && currentTarget[val]) {
 
@@ -803,18 +813,7 @@ function _ensurePropertyBindingPatch() {
 					if (_animationPointerDebug)
 						console.log(currentTarget);
 
-				} else if (currentTarget && currentTarget.isObject3D) {
-
-					// access by child node name, e.g. the submeshes of a multi-material mesh:
-					// `.nodes.<node>.<submesh>.morphTargetInfluences`.
-					// Must resolve inside the already resolved node: a glTF mesh used by multiple nodes
-					// is cloned per node, so every node has identically named submeshes.
-					const foundNode = _findDescendantByName(currentTarget, val);
-
-					if (foundNode)
-						currentTarget = foundNode;
-
-				} else {
+				} else if (!currentTarget || !currentTarget.isObject3D) {
 
 					// access by node name
 					const foundNode = node.getObjectByName(val);
