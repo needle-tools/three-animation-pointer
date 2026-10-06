@@ -26,10 +26,13 @@ jobs:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
-          cache-dependency-path: './package.json'
+          cache-dependency-path: './package-lock.json'
           
       - name: Install dependencies
-        run: npm install
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
                 
       - name: Publish to npm (stable branch)
         if: startsWith(github.ref_name, 'release/stable')
